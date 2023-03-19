@@ -1,0 +1,3 @@
+# files meant to exist locally only
+env/
+scratch/
