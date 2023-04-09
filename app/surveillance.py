@@ -18,10 +18,12 @@ with st.sidebar:
 
 # AIzaSyCnxRIsZr9xkpY_orHABWdjXdGDuj_inK4
 def audio_frame_callback(frame: av.AudioFrame) -> av.AudioFrame:
+    sound = frame.to_ndarray()
+    result_sound = sound if display_settings['echo'] else np.zeros_like(sound)
+    result_frame = av.AudioFrame.from_ndarray(result_sound, layout=frame.layout.name)
+    result_frame.sample_rate = frame.sample_rate
     return av.AudioFrame
-# result_sound = sound if display_settings['echo'] else np.zeros_like(sound)
-# result_frame = av.AudioFrame.from_ndarray(result_sound, layout=frame.layout.name)
-# result_frame.sample_rate = frame.sample_rate
+
 
 
 def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
