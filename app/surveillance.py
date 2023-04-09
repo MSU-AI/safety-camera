@@ -19,12 +19,11 @@ with st.sidebar:
 # AIzaSyCnxRIsZr9xkpY_orHABWdjXdGDuj_inK4
 def audio_frame_callback(frame: av.AudioFrame) -> av.AudioFrame:
     sound = frame.to_ndarray()
+    # print(sound.max(),flush=True)
     result_sound = sound if display_settings['echo'] else np.zeros_like(sound)
     result_frame = av.AudioFrame.from_ndarray(result_sound, layout=frame.layout.name)
     result_frame.sample_rate = frame.sample_rate
-    return av.AudioFrame
-
-
+    return result_frame
 
 def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
      # Initialize face detection
@@ -53,6 +52,7 @@ def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
         new_video_frame = av.VideoFrame.from_ndarray(img_array, format='bgr24')
 
     return new_video_frame
+
 
 streamer = webrtc_streamer(
     key='surveillance',
