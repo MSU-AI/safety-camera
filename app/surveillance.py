@@ -16,23 +16,17 @@ with st.sidebar:
         'echo': st.checkbox('echo'),
     }
 
+# AIzaSyCnxRIsZr9xkpY_orHABWdjXdGDuj_inK4
 def audio_frame_callback(frame: av.AudioFrame) -> av.AudioFrame:
-    sound = frame.to_ndarray()
-
-    # sound logic
-
-
-    
-    
     return av.AudioFrame
 # result_sound = sound if display_settings['echo'] else np.zeros_like(sound)
 # result_frame = av.AudioFrame.from_ndarray(result_sound, layout=frame.layout.name)
 # result_frame.sample_rate = frame.sample_rate
-st.session_state['faces'] = 0
+
 
 def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
      # Initialize face detection
-    with mp_face_detection.FaceDetection(min_detection_confidence=0.2) as face_detection:
+    with mp_face_detection.FaceDetection(min_detection_confidence=0.8) as face_detection:
 
         # Convert av.VideoFrame to ndarray
         img_array = np.array(frame.to_ndarray(format='bgr24'))
@@ -52,7 +46,7 @@ def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
         if results.detections:
             for detection in results.detections:
                 mp_drawing.draw_detection(img_array, detection)
-            st.session_state['faces'] = len(results.detections)
+            faces = len(results.detections)
         # Convert the modified ndarray back to av.VideoFrame
         new_video_frame = av.VideoFrame.from_ndarray(img_array, format='bgr24')
 
