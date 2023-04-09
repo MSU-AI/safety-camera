@@ -1,48 +1,24 @@
 import streamlit as st
-from streamlit_webrtc import webrtc_streamer
-import speech_recognition as sr
-import time
+from streamlit_webrtc import WebRtcMode, webrtc_streamer
+import surveillance as sv
 
-def speech_to_text_microphone():
-    # initialize recognizer class (for recognizing the speech)
-    r = sr.Recognizer()
-    
-    # Reading Microphone as source
-    # listening the speech and store in audio_text variable
-    with sr.Microphone() as source:
-        audio_text = r.listen(source)
-    # recoginize_() method will throw a request error if the API is unreachable, hence using exception handling
-    try:
-        # using google speech recognition
-        return r.recognize_google(audio_text)
-    except:
-        return ""
-    
-
-audio = ""
+st.set_page_config(page_title='Surveillance')
 st.title("SafetyCam")
+if 'mirror' not in st.session_state:
+    st.session_state['mirror'] = 1
 
-webrtc_streamer(key="video")
-def live_caption():
-    text = ""
-    # Initialize recognizer and microphone objects
-    r = sr.Recognizer()
-    mic = sr.Microphone()
+if 'echo' not in st.session_state:
+    st.session_state['echo'] = 1
 
-    # Set minimum energy threshold to account for ambient noise
-    with mic as source:
-        r.adjust_for_ambient_noise(source)
+with st.sidebar:
+    st.write('# Settings')
+    st.session_state['mirror']: st.checkbox('mirror')
+    st.session_state['echo']: st.checkbox('echo')
 
-    # Continuously listen to microphone input and print live caption
-    with mic as source:
-        while True:
-            try:
-                audio = r.listen(source)
-                text = r.recognize_google(audio)
-                print(text)
-                st.write(text)
-            except sr.UnknownValueError:
-                # Handle unrecognized speech
-                pass
-if st.button("Start Live Caption"):
-    live_caption()
+streamer = webrtc_streamer(
+    key='surveillance',
+    mode=WebRtcMode.SENDRECV,
+    audio_frame_callback=sv.audio_frame_callback,
+    video_frame_callback=sv.video_frame_callback,
+    async_processing=True,
+)
