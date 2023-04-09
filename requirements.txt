@@ -1,0 +1,7 @@
+ipykernel>=6.21.3,<=6.22
+numpy>=1.24.2,<=1.25
+pydub>=0.25.1,<=0.26
+streamlit>=1.20.0,<=1.21
+streamlit-webrtc>=0.45.0,<=0.46
+opencv-python>=4.7.0.72,<=4.8
+mediapipe
