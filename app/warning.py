@@ -2,9 +2,8 @@ import streamlit as st
 
 class Alerts():
     
-    def __init__(self, max_faces, min_faces, threshold_decibals):
-        self.max_faces = max_faces
-        self.min_faces = min_faces
+    def __init__(self, faces, threshold_decibals):
+        self.faces = faces
         self.threshold_decibals = threshold_decibals
     
     def by_audiolevel_threshold(self, current_audio_decibals):
@@ -62,7 +61,7 @@ class Alerts():
         pass
     
     def by_number_of_faces(self, faces_seen):
-        if faces_seen>=self.max_faces:
+        if faces_seen > self.faces:
             st.markdown(
                 """
                 <style>
@@ -110,7 +109,7 @@ class Alerts():
                 """,
                 unsafe_allow_html=True
             )
-        elif faces_seen<=self.min_faces:
+        elif faces_seen < self.faces:
             st.markdown(
                 """
                 <style>
@@ -158,6 +157,3 @@ class Alerts():
                 """,
                 unsafe_allow_html=True
             )
-
-a=Alerts(1,1,1)
-a.by_number_of_faces(-1)

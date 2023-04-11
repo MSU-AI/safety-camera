@@ -4,7 +4,6 @@ import av
 import numpy as np
 import cv2
 import mediapipe as mp
-import warning as wn
 
 st.set_page_config(page_title='Surveillance')
 st.title("SafetyCam")
@@ -14,17 +13,18 @@ mp_drawing = mp.solutions.drawing_utils
 
 with st.sidebar:
     st.write('# Settings')
-    # mirror = st.checkbox('mirror')
     echo = st.checkbox('listen to audio')
-    num_faces = st.slider('Number of people in the room',0,10,(0,10))
+    num_faces = st.slider('Number of people in the room',0,10,1)
     sound_max = st.slider('Sound Threshold',0,50000,1000)
-    min_faces = num_faces[0]
-    max_faces = num_faces[1]
-warn = wn.Alerts(max_faces,min_faces,sound_max)
+    faces = num_faces
 
 def audio_frame_callback(frame: av.AudioFrame) -> av.AudioFrame:
     sound = frame.to_ndarray()
-    warn.by_audiolevel_threshold(sound.max())
+    if sound.max() > sound_max:
+        print("Audio Range Exceeded!!")
+        quit()
+    else:
+        print("Normal")
     result_sound = sound if echo else np.zeros_like(sound)
     result_frame = av.AudioFrame.from_ndarray(result_sound, layout=frame.layout.name)
     result_frame.sample_rate = frame.sample_rate
@@ -56,17 +56,21 @@ def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
             faces = len(results.detections)
         else:
             faces = 0
-        warn.by_number_of_faces(faces)
+        
+        if faces < num_faces or faces > num_faces:
+            print("Range exceeded")
+            quit()
+        else:
+            print("In Range")
         # Convert the modified ndarray back to av.VideoFrame
         new_video_frame = av.VideoFrame.from_ndarray(img_array, format='bgr24')
 
     return new_video_frame
-
 
 streamer = webrtc_streamer(
     key='surveillance',
     mode=WebRtcMode.SENDRECV,
     audio_frame_callback=audio_frame_callback,
     video_frame_callback=video_frame_callback,
-    async_processing=True,
+    async_processing=False,
 )
