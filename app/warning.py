@@ -1,14 +1,14 @@
 import streamlit as st
 
-class Warnings():
+class Alerts():
     
-    def __init__(self, max_faces=2, min_faces=0, threshold_decibals=1000):
+    def __init__(self, max_faces, min_faces, threshold_decibals):
         self.max_faces = max_faces
         self.min_faces = min_faces
         self.threshold_decibals = threshold_decibals
     
     def by_audiolevel_threshold(self, current_audio_decibals):
-        if self.threshold_decibals<current_audio_decibals:
+        if self.threshold_decibals<=current_audio_decibals:
             st.markdown(
                 """
                 <style>
@@ -159,5 +159,4 @@ class Warnings():
                 unsafe_allow_html=True
             )
 
-warning=Warnings()
-print(warning.by_audiolevel_threshold(10000))
+warn = Alerts()
