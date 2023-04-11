@@ -159,4 +159,5 @@ class Alerts():
                 unsafe_allow_html=True
             )
 
-warn = Alerts()
+warning=Warnings()
+print(warning.by_audiolevel_threshold(10000))
