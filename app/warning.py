@@ -1,6 +1,6 @@
 import streamlit as st
 
-class Warnings():
+class Alerts():
     
     def __init__(self, max_faces=2, min_faces=0, threshold_decibals=1000):
         self.max_faces = max_faces
@@ -158,6 +158,3 @@ class Warnings():
                 """,
                 unsafe_allow_html=True
             )
-
-warning=Warnings()
-print(warning.by_audiolevel_threshold(10000))
