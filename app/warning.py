@@ -62,7 +62,7 @@ class Alerts():
         pass
     
     def by_number_of_faces(self, faces_seen):
-        if faces_seen>self.max_faces:
+        if faces_seen>=self.max_faces:
             st.markdown(
                 """
                 <style>
@@ -110,7 +110,7 @@ class Alerts():
                 """,
                 unsafe_allow_html=True
             )
-        elif faces_seen<self.min_faces:
+        elif faces_seen<=self.min_faces:
             st.markdown(
                 """
                 <style>
@@ -159,5 +159,5 @@ class Alerts():
                 unsafe_allow_html=True
             )
 
-warning=Warnings()
-print(warning.by_audiolevel_threshold(10000))
+a=Alerts(1,1,1)
+a.by_number_of_faces(-1)
