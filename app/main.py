@@ -22,7 +22,6 @@ def audio_frame_callback(frame: av.AudioFrame) -> av.AudioFrame:
     sound = frame.to_ndarray()
     if sound.max() > sound_max:
         print("Audio Range Exceeded!!")
-        quit()
     else:
         print("Normal")
     result_sound = sound if echo else np.zeros_like(sound)
@@ -59,7 +58,6 @@ def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
         
         if faces < num_faces or faces > num_faces:
             print("Range exceeded")
-            quit()
         else:
             print("In Range")
         # Convert the modified ndarray back to av.VideoFrame
