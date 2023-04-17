@@ -4,7 +4,6 @@ import av
 import numpy as np
 import cv2
 import mediapipe as mp
-
 st.set_page_config(page_title='Surveillance')
 st.title("SafetyCam")
 
@@ -17,13 +16,16 @@ with st.sidebar:
     num_faces = st.slider('Number of people in the room',0,10,1)
     sound_max = st.slider('Sound Threshold',0,50000,1000)
     faces = num_faces
-
 def audio_frame_callback(frame: av.AudioFrame) -> av.AudioFrame:
+    error = "Normal"
     sound = frame.to_ndarray()
     if sound.max() > sound_max:
-        print("Audio Range Exceeded!!")
+        if error == "Normal":
+            print("Audio Range Exceeded!!")
     else:
-        print("Normal")
+        if error == "Audio Range Exceeded!!":
+            print("In Range")
+            error = "Normal"
     result_sound = sound if echo else np.zeros_like(sound)
     result_frame = av.AudioFrame.from_ndarray(result_sound, layout=frame.layout.name)
     result_frame.sample_rate = frame.sample_rate
@@ -31,6 +33,7 @@ def audio_frame_callback(frame: av.AudioFrame) -> av.AudioFrame:
     return result_frame
 
 def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
+    error_video = "Normal"
      # Initialize face detection
     with mp_face_detection.FaceDetection(min_detection_confidence=0.8) as face_detection:
 
@@ -57,9 +60,11 @@ def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
             faces = 0
         
         if faces < num_faces or faces > num_faces:
-            print("Range exceeded")
+            if error_video == "Normal":
+                print("Number of Faces Not in Range!!")
+                error_video = "Number of Faces Not in Range!!"
         else:
-            print("In Range")
+            pass
         # Convert the modified ndarray back to av.VideoFrame
         new_video_frame = av.VideoFrame.from_ndarray(img_array, format='bgr24')
 
@@ -70,5 +75,5 @@ streamer = webrtc_streamer(
     mode=WebRtcMode.SENDRECV,
     audio_frame_callback=audio_frame_callback,
     video_frame_callback=video_frame_callback,
-    async_processing=False,
 )
+
